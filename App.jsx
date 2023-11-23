@@ -1,5 +1,10 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
 import Constants from 'expo-constants'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+
+import { useState } from 'react'
+import Header from './src/components/Header'
+import NoAccess from './src/components/NoAccess'
+import BodySection from './src/components/BodySection'
 
 export default function App() {
 
@@ -16,53 +21,28 @@ export default function App() {
   /** booleano si el usuario es mayor de edad */
   const isOlder = user.age > 18
 
-  /** acceso a la aplicacion */
-  const token = true
+  const [token, setToken] = useState(false)
 
-  /**
-   * componetizar el HEADER
-   * componetizar el BODY SECTION
-   * componetizar el FOOTER
-   */
+  const photoNoAccess = 'https://png.pngtree.com/element_our/20190601/ourlarge/pngtree-no-entry-icon-design-image_1364550.jpg'
 
   return (
     <View style={styles.container}>
 
-      <View style={styles.header}>
-        <Text style={styles.title}>Welcome</Text>
-        <Text style={{ fontSize: 16 }}>
-          Bienvenido {user.name} a la Aplicación de mascotas más popula del Perú
+      <Header nombre={user.name} mayorEdad={isOlder} />
+
+      <TouchableOpacity
+        style={styles.buttonAccess}
+        onPress={() => setToken(!token)}
+      >
+        {/* "=" asignacion "==" compracion debil "===" comparacion extricta */}
+        <Text style={styles.titleButton}>
+          {token ? 'Denegar Acceso' : 'Obtener Acceso'}
         </Text>
-        <View style={{ flexDirection: 'row', gap: 5, marginTop: 10, alignItems: 'center' }}>
-          <Text style={styles.ageMessage}>
-            {isOlder ? 'Usted es mayor de edad' : 'Eres menor de edad'}
-          </Text>
-          <View style={[styles.circle, { backgroundColor: isOlder ? 'green' : 'red' }]}></View>
-        </View>
-      </View>
+      </TouchableOpacity>
 
-      {token &&
-        <>
-          <View style={styles.containerBoxes2}>
-            <View style={styles.box}></View>
-            <View style={styles.box}></View>
-            <View style={styles.box}></View>
-            <View style={styles.box}></View>
-          </View>
-          <View style={styles.footer}>
-            <View style={styles.elementFooter}></View>
-          </View>
-        </>
-      }
+      {token && <BodySection />}
 
-      {!token &&
-        <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
-          <Image
-            source={{ uri: 'https://png.pngtree.com/element_our/20190601/ourlarge/pngtree-no-entry-icon-design-image_1364550.jpg' }}
-            style={{ width: 300, height: 300 }}
-          />
-        </View>
-      }
+      {!token && <NoAccess photoUri={photoNoAccess} />}
 
     </View>
   )
@@ -74,52 +54,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: Constants.statusBarHeight
   },
-  header: {
-    flex: 1,
-    backgroundColor: '#add',
-    padding: 15
+  buttonAccess: {
+    backgroundColor: 'orange',
+    padding: 10,
+    borderRadius: 5,
+    alignSelf: 'center',
+    marginVertical: 10
   },
-  title: {
-    fontSize: 30,
-    fontWeight: '900',
-  },
-  containerBoxes: {
-    flex: 2,
-    backgroundColor: '#ooo',
-  },
-  box: {
-    flexBasis: '45%',
-    backgroundColor: 'skyblue',
-    height: 150,
-    borderRadius: 20,
-  },
-  containerBoxes2: {
-    flex: 2,
-    backgroundColor: 'blue',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 10,
-    alignContent: 'center'
-  },
-  footer: {
-    flex: 1,
-    backgroundColor: 'red'
-  },
-  elementFooter: {
-    flex: 1,
-    margin: 15,
-    backgroundColor: 'violet',
-    borderRadius: 10
-  },
-  ageMessage: {
-    fontWeight: 'bold',
-    fontSize: 16
-  },
-  circle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10
+  titleButton: {
+    color: 'white',
+    fontWeight: '700'
   }
 })
 
